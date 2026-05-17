@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGCF | Borracharia SV</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap');
+
+  :root {
+    --navy: #1a2340;
+    --navy-light: #243057;
+    --gold: #b8952a;
+    --gold-light: #d4af4a;
+    --bg: #f0f2f5;
+    --white: #ffffff;
+    --border: #dde1e9;
+    --text: #2c3e50;
+    --muted: #6b7a99;
+    --green: #2ecc71;
+    --red: #e74c3c;
+    --sidebar-w: 240px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--navy);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 14px;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    overflow-y: auto;
+    z-index: 100;
+  }
+
+  .sidebar-toggle {
+    position: absolute;
+    top: 14px; right: 10px;
+    background: none; border: none;
+    color: var(--muted);
+    font-size: 16px;
+    cursor: pointer;
+    opacity: .6;
+  }
+  .sidebar-toggle:hover { opacity: 1; }
+
+  .logo-wrap {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    margin-top: 10px;
+  }
+  .logo-placeholder {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--navy);
+    text-align: center;
+    line-height: 1.1;
+  }
+  .logo-sub {
+    font-size: 9px;
+    color: var(--gold);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 2px;
+  }
+
+  .divider {
+    height: 1px;
+    background: rgba(255,255,255,.1);
+    margin: 12px 0;
+  }
+
+  .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  /* ── ÚLTIMOS 5 SERVIÇOS — COMPACTO ── */
+  .os-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .os-item {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.08);
+    border-left: 3px solid var(--gold);
+    border-radius: 5px;
+    padding: 5px 8px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .os-item:hover { background: rgba(255,255,255,.1); }
+  .os-item.pendente { border-left-color: #e74c3c; }
+
+  .os-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--white);
+    white-space: nowrap;
+  }
+  .os-info {
+    font-size: 9.5px;
+    color: rgba(255,255,255,.55);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .os-badge {
+    font-size: 8px;
+    font-weight: 700;
+    padding: 2px 5px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .os-badge.fin { background: rgba(46,204,113,.2); color: #2ecc71; }
+  .os-badge.pen { background: rgba(231,76,60,.2); color: #e74c3c; }
+
+  /* ── MAIN ── */
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .page-header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 36px 16px;
+  }
+  .page-header h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .page-header p {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 3px;
+    padding-left: 38px; /* alinha com o texto após o ícone */
+  }
+
+  /* ── FORM ── */
+  .content {
+    flex: 1;
+    padding: 28px 36px;
+  }
+
+  .card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 28px 32px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    max-width: 860px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .form-row.three { grid-template-columns: 1fr 1fr 1fr; }
+  .form-row.four  { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  .form-row.full  { grid-template-columns: 1fr; }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .7px;
+    color: var(--muted);
+  }
+
+  input, select, textarea {
+    font-family: 'Barlow', sans-serif;
+    font-size: 13.5px;
+    padding: 9px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    background: #f7f9fc;
+    color: var(--text);
+    outline: none;
+    transition: border .15s, box-shadow .15s;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(184,149,42,.12);
+    background: var(--white);
+  }
+  input[readonly] {
+    background: #eef1f7;
+    color: var(--muted);
+    cursor: default;
+  }
+  textarea { resize: vertical; min-height: 90px; }
+
+  /* TEMPO CALCULADO */
+  .tempo-calc {
+    font-size: 11px;
+    color: var(--gold);
+    font-weight: 600;
+    margin-top: 3px;
+    min-height: 16px;
+  }
+
+  /* STATUS */
+  .status-group {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 20px;
+  }
+  .label-status {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .7px;
+    color: var(--muted);
+  }
+  .radio-opt {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .radio-opt input[type=radio] { width: 16px; height: 16px; accent-color: var(--red); cursor: pointer; }
+
+  /* TIPOS DE MANUTENÇÃO — chips */
+  .tipo-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 2px;
+  }
+  .chip {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s;
+    background: #f7f9fc;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .chip:hover { border-color: var(--gold); color: var(--gold); }
+  .chip.active {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: var(--white);
+  }
+
+  /* SAVE BTN */
+  .btn-save {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--green);
+    color: var(--white);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background .15s, transform .1s;
+    margin-top: 8px;
+  }
+  .btn-save:hover { background: #27ae60; transform: translateY(-1px); }
+  .btn-save:active { transform: translateY(0); }
+
+  /* ── FOOTER ── */
+  .footer {
+    padding: 14px 36px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: .3px;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: var(--navy);
+    color: var(--white);
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    border-left: 4px solid var(--green);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all .3s;
+    z-index: 999;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar">
+  <button class="sidebar-toggle" title="Recolher">«</button>
+
+  <div class="logo-wrap">
+    <div>
+      <div class="logo-placeholder">BIP.</div>
+      <div class="logo-sub">Santa Vergínia<br>Agropecuária e Florestal</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-label">🔧 Últimos Serviços</div>
+
+  <div class="os-list" id="osList">
+    <!-- renderizado via JS -->
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<div class="main">
+
+  <header class="page-header">
+    <h1>🛞 Gestão de Borracharia - SV</h1>
+    <p>SIGCF — Sistema Integrado de Gestão de Custos de Frota</p>
+  </header>
+
+  <div class="content">
+    <div class="card">
+
+      <!-- STATUS -->
+      <div class="status-group">
+        <span class="label-status">Status:</span>
+        <label class="radio-opt">
+          <input type="radio" name="status" value="FINALIZADO" checked> FINALIZADO
+        </label>
+        <label class="radio-opt">
+          <input type="radio" name="status" value="PENDENTE"> PENDENTE
+        </label>
+      </div>
+
+      <!-- LINHA 1: OS + EQUIPAMENTO + HORÍMETRO -->
+      <div class="form-row three">
+        <div class="form-group">
+          <label>Nº OS (automático)</label>
+          <input type="text" id="numeroOS" readonly placeholder="BOR-0001">
+        </div>
+        <div class="form-group">
+          <label>Equipamento / Frota</label>
+          <input type="text" id="equipamento" placeholder="3385 - TRATOR...">
+        </div>
+        <div class="form-group">
+          <label>Horímetro</label>
+          <input type="number" id="horimetro" placeholder="0000">
+        </div>
+      </div>
+
+      <!-- LINHA 2: BORRACHEIRO -->
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Borracheiro</label>
+          <input type="text" id="borracheiro" placeholder="Nome do borracheiro">
+        </div>
+      </div>
+
+      <!-- TIPO DE MANUTENÇÃO — chips -->
+      <div class="form-group" style="margin-bottom:16px">
+        <label>Tipo de Manutenção</label>
+        <div class="tipo-chips" id="tipoChips">
+          <span class="chip" onclick="selecionarTipo(this)">REMENDO</span>
+          <span class="chip" onclick="selecionarTipo(this)">RODÍZIO</span>
+          <span class="chip" onclick="selecionarTipo(this)">TROCA DE PNEU</span>
+          <span class="chip" onclick="selecionarTipo(this)">TROCA DE CÂMARA</span>
+        </div>
+        <input type="hidden" id="tipoManutencao">
+      </div>
+
+      <!-- LINHA 3: HORA ENTRADA / SAÍDA -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>Hora Entrada</label>
+          <input type="datetime-local" id="horaEntrada" oninput="calcularTempo()">
+        </div>
+        <div class="form-group">
+          <label>Hora Saída</label>
+          <input type="datetime-local" id="horaSaida" oninput="calcularTempo()">
+          <div class="tempo-calc" id="tempoCalc"></div>
+        </div>
+      </div>
+
+      <!-- DESCRIÇÃO -->
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Descrição do serviço e peças aplicadas</label>
+          <textarea id="descricao" placeholder="Ex: Troca de pneu traseiro esquerdo, pneu 18.4-34, câmara nova..."></textarea>
+        </div>
+      </div>
+
+      <!-- OBSERVAÇÃO -->
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Observação</label>
+          <textarea id="observacao" placeholder="Observações adicionais..."></textarea>
+        </div>
+      </div>
+
+      <button class="btn-save" onclick="salvar()">✅ SALVAR NO SISTEMA</button>
+    </div>
+  </div>
+
+  <footer class="footer">
+    SIGCF | BORRACHARIA SV | NÚCLEO DE CONTROLADORIA SV
+  </footer>
+</div>
+
+<div class="toast" id="toast">✅ OS salva com sucesso!</div>
+
+<script>
+const API = 'http://localhost:5001';
+
+// ── CARREGA ÚLTIMOS 5 SERVIÇOS ──
+async function renderOS() {
+  const list = document.getElementById('osList');
+  try {
+    const res = await fetch(`${API}/api/bor/ultimas`);
+    const data = await res.json();
+    if (!data.length) { list.innerHTML = '<div style="color:rgba(255,255,255,.4);font-size:11px;padding:6px">Nenhum serviço ainda</div>'; return; }
+    list.innerHTML = data.map(o => `
+      <div class="os-item ${o.status === 'PENDENTE' ? 'pendente' : ''}" onclick="document.getElementById('numeroOS').value='${o.numero_os}'">
+        <span class="os-num">${o.numero_os}</span>
+        <span class="os-info">${o.id_frota} · ${(o.borracheiro||'').split(' ')[0]}</span>
+        <span class="os-badge ${o.status === 'FINALIZADO' ? 'fin' : 'pen'}">${o.status === 'FINALIZADO' ? 'FIN' : 'PEN'}</span>
+      </div>
+    `).join('');
+  } catch(e) {
+    list.innerHTML = '<div style="color:#e74c3c;font-size:10px;padding:6px">⚠ API offline</div>';
+  }
+}
+
+// ── GERA NÚMERO OS ──
+async function gerarNumeroOS() {
+  try {
+    const res = await fetch(`${API}/api/bor/ultimas`);
+    const data = await res.json();
+    const n = data.length ? parseInt(data[0].numero_os.split('-')[1]) + 1 : 1;
+    document.getElementById('numeroOS').value = 'BOR-' + String(n).padStart(4,'0');
+  } catch(e) {
+    document.getElementById('numeroOS').value = 'BOR-0001';
+  }
+}
+
+function selecionarTipo(el) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tipoManutencao').value = el.textContent;
+}
+
+function calcularTempo() {
+  const e = document.getElementById('horaEntrada').value;
+  const s = document.getElementById('horaSaida').value;
+  const div = document.getElementById('tempoCalc');
+  if (!e || !s) { div.textContent = ''; return; }
+  const diff = (new Date(s) - new Date(e)) / 60000;
+  if (diff < 0) { div.textContent = '⚠ Saída anterior à entrada'; return; }
+  const h = Math.floor(diff / 60);
+  const m = Math.round(diff % 60);
+  div.textContent = `⏱ Tempo: ${h}h ${m}min`;
+}
+
+// ── SALVAR ──
+async function salvar() {
+  const os   = document.getElementById('numeroOS').value;
+  const eq   = document.getElementById('equipamento').value;
+  const tipo = document.getElementById('tipoManutencao').value;
+  if (!eq || !tipo) { alert('Preencha Equipamento e Tipo de Manutenção.'); return; }
+
+  const status = document.querySelector('input[name="status"]:checked').value;
+  const he = document.getElementById('horaEntrada').value;
+  const hs = document.getElementById('horaSaida').value;
+  let tempo = null;
+  if (he && hs) tempo = Math.round((new Date(hs) - new Date(he)) / 60000);
+
+  const payload = {
+    numero_os:       os,
+    id_frota:        eq,
+    horimetro:       parseFloat(document.getElementById('horimetro').value) || null,
+    borracheiro:     document.getElementById('borracheiro').value,
+    tipo_manutencao: tipo,
+    hora_entrada:    he || null,
+    hora_saida:      hs || null,
+    tempo_minutos:   tempo,
+    status:          status,
+    descricao:       document.getElementById('descricao').value,
+    observacao:      document.getElementById('observacao').value
+  };
+
+  try {
+    const res = await fetch(`${API}/api/bor`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const json = await res.json();
+    if (json.ok) {
+      const t = document.getElementById('toast');
+      t.textContent = `✅ ${os} salva com sucesso!`;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2800);
+      renderOS();
+      gerarNumeroOS();
+    }
+  } catch(e) {
+    alert('Erro ao salvar. Verifique se a API está rodando na porta 5001.');
+  }
+}
+
+gerarNumeroOS();
+renderOS();
+</script>
+</body>
+</html>
