@@ -28,23 +28,26 @@ def carregar_frota():
 
 @st.cache_data(ttl=10)
 def carregar_os():
-    res = (supabase.table("os_borracharia")
-           .select("numero_os, id_frota, borracheiro, Status, criado_em")
-           .order("criado_em", desc=True)
-           .limit(50)
-           .execute())
-    return res.data or []
+    try:
+        res = (supabase.table("os_borracharia")
+               .select("*")
+               .order("criado_em", desc=True)
+               .limit(50)
+               .execute())
+        return res.data or []
+    except Exception:
+        return []
 
 @st.cache_data(ttl=300)
 def carregar_borracheiros():
     res = supabase.table("dim_colaborador").select("id_colaborador, nome").eq("ativo", True).order("nome").execute()
     return res.data or []
 
-frota_data        = carregar_frota()
-os_data           = carregar_os()
-borracheiros_data = carregar_borracheiros()
+frota_data         = carregar_frota()
+os_data            = carregar_os()
+borracheiros_data  = carregar_borracheiros()
 
-lista_frotas      = [f"{f['id_frota']} - {f['modelo']}" for f in frota_data] or ["Cadastre a frota"]
+lista_frotas       = [f"{f['id_frota']} - {f['modelo']}" for f in frota_data] or ["Cadastre a frota"]
 lista_borracheiros = [m['nome'] for m in borracheiros_data] or ["Cadastre o borracheiro"]
 
 # Próximo número OS
@@ -60,8 +63,10 @@ with st.sidebar:
     st.divider()
     st.header("🔧 Últimos Serviços")
     if os_data:
-        df_os = pd.DataFrame(os_data)[['numero_os','id_frota','borracheiro','Status']].head(5)
-        st.table(df_os)
+        df_os = pd.DataFrame(os_data)
+        # usa colunas que existirem
+        cols_show = [c for c in ['numero_os','id_frota','borracheiro','Status'] if c in df_os.columns]
+        st.table(df_os[cols_show].head(5))
     else:
         st.info("Nenhum serviço registrado.")
 
@@ -74,13 +79,10 @@ with st.form("form_borracharia", clear_on_submit=True):
     c1, c2 = st.columns(2)
 
     with c1:
-        frota_sel    = st.selectbox("Selecione o Equipamento", options=lista_frotas)
-        borracheiro  = st.selectbox("Borracheiro", options=lista_borracheiros)
-        tipo_manut   = st.selectbox("Tipo de Manutenção", [
-            "REMENDO",
-            "RODÍZIO",
-            "TROCA DE PNEU",
-            "TROCA DE CÂMARA"
+        frota_sel   = st.selectbox("Selecione o Equipamento", options=lista_frotas)
+        borracheiro = st.selectbox("Borracheiro", options=lista_borracheiros)
+        tipo_manut  = st.selectbox("Tipo de Manutenção", [
+            "REMENDO", "RODÍZIO", "TROCA DE PNEU", "TROCA DE CÂMARA"
         ])
 
     with c2:
@@ -98,13 +100,12 @@ with st.form("form_borracharia", clear_on_submit=True):
         if not descricao.strip():
             st.warning("⚠️ Descrição é obrigatória.")
         else:
-            # Calcular tempo em minutos
             tempo_min = None
             if hora_entrada and hora_saida:
-                dt_entrada = datetime.combine(datetime.today(), hora_entrada)
-                dt_saida   = datetime.combine(datetime.today(), hora_saida)
-                if dt_saida > dt_entrada:
-                    tempo_min = int((dt_saida - dt_entrada).total_seconds() / 60)
+                dt_e = datetime.combine(datetime.today(), hora_entrada)
+                dt_s = datetime.combine(datetime.today(), hora_saida)
+                if dt_s > dt_e:
+                    tempo_min = int((dt_s - dt_e).total_seconds() / 60)
 
             id_frota = frota_sel.split(" - ")[0].strip()
 
@@ -118,8 +119,8 @@ with st.form("form_borracharia", clear_on_submit=True):
                 "hora_saida":      str(hora_saida)   if hora_saida   else None,
                 "tempo_minutos":   tempo_min,
                 "Status":          status_os,
-                "descrição":       descricao,
-                "Observação":      observacao,
+                "descri\u00e7\u00e3o":       descricao,
+                "Observa\u00e7\u00e3o":      observacao,
                 "criado_em":       datetime.now().isoformat()
             }
 
