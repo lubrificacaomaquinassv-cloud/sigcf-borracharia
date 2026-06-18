@@ -15,7 +15,7 @@ from sigcf_auth import exigir_acesso, logo_html
 
 TIPOS_MANUT = ["REMENDO", "RODÍZIO", "TROCA DE PNEU", "TROCA DE CÂMARA"]
 
-exigir_acesso("OS Borracharia")
+exigir_acesso("OS BORRACHARIA")
 
 st.markdown("""
 <style>
@@ -208,7 +208,7 @@ col_logo, col_titulo, col_acao = st.columns([1.1, 5, 1])
 with col_logo:
     st.markdown(logo_html(118), unsafe_allow_html=True)
 with col_titulo:
-    st.title("Gestão de Borracharia")
+    st.title("OS BORRACHARIA")
     st.caption("SIGCF — ORDEM DE SERVIÇO DE BORRACHARIA")
 with col_acao:
     if st.button("🔄 Atualizar"):
