@@ -3,7 +3,7 @@ import pandas as pd
 from datetime import datetime, date
 from io import BytesIO
 from supabase import create_client
-from sigcf_auth import exigir_acesso
+from sigcf_auth import exigir_acesso, logo_html, LOGO_FRAME_CSS
 
 st.set_page_config(
     page_title="Borracharia SV - SIGCF",
@@ -12,7 +12,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-LOGO_URL = "https://i.postimg.cc/Y9X7ddnb/LOGO-BP.jpg"
 TIPOS_MANUT = ["REMENDO", "RODÍZIO", "TROCA DE PNEU", "TROCA DE CÂMARA"]
 
 exigir_acesso("Gestão de Borracharia")
@@ -30,7 +29,7 @@ h1{font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;}
 .sec{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;
  letter-spacing:2px;text-transform:uppercase;color:#8aab80;
  border-left:4px solid #4a9e3f;padding-left:10px;margin:8px 0 12px;}
-.logo-box{background:#ffffff;border-radius:10px;padding:8px 12px;display:inline-block;}
+""" + LOGO_FRAME_CSS + """
 .ctx-box{background:#0d180c;border:1px solid #1e2e1c;border-radius:12px;padding:14px 16px;margin-bottom:12px;}
 .cat-badge{display:inline-block;background:#0d180c;border:1px solid #4a9e3f;color:#6fcf60;
  font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1px;
@@ -202,9 +201,9 @@ lista_borracheiros = borracheiros or ["Cadastre o borracheiro"]
 num_os = proximo_numero_os(os_data)
 numero_os_str = f"BOR-{num_os:04d}"
 
-col_logo, col_titulo, col_acao = st.columns([1, 5, 1])
+col_logo, col_titulo, col_acao = st.columns([1.1, 5, 1])
 with col_logo:
-    st.markdown(f'<div class="logo-box"><img src="{LOGO_URL}" width="100"></div>', unsafe_allow_html=True)
+    st.markdown(logo_html(118), unsafe_allow_html=True)
 with col_titulo:
     st.title("Gestão de Borracharia")
     st.caption("SIGCF — Ordem de serviço de borracharia · vínculo frota → painel financeiro")
