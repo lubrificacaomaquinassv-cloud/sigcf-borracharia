@@ -1,4 +1,4 @@
-"""PIN opcional SIGCF / SIGRH - logo Santa Virginia premium."""
+"""PIN opcional SIGCF / SIGRH — logo Santa Virgínia premium."""
 import base64
 from pathlib import Path
 
@@ -26,7 +26,7 @@ def logo_html(width: int = 118) -> str:
         src = f"data:image/png;base64,{b64}"
     else:
         src = LOGO_URL
-    return f'<div class="logo-frame"><img src="{src}" width="{width}" alt="Santa Virginia"></div>'
+    return f'<div class="logo-frame"><img src="{src}" width="{width}" alt="Santa Virgínia"></div>'
 
 
 def link_instagram(text: str = "@fazendasantaverginia") -> str:
@@ -36,7 +36,7 @@ def link_instagram(text: str = "@fazendasantaverginia") -> str:
     )
 
 
-def exigir_acesso(titulo: str, subtitulo: str = "Acesso restrito - SIGCF Santa Virginia"):
+def exigir_acesso(titulo: str, subtitulo: str = "Acesso restrito — SIGCF Santa Virgínia"):
     import streamlit as st
 
     pin_cfg = str(st.secrets.get("APP_PIN", "") or "").strip()
