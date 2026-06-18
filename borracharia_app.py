@@ -15,7 +15,7 @@ from sigcf_auth import exigir_acesso, logo_html
 
 TIPOS_MANUT = ["REMENDO", "RODÍZIO", "TROCA DE PNEU", "TROCA DE CÂMARA"]
 
-exigir_acesso("Gestão de Borracharia")
+exigir_acesso("OS Borracharia")
 
 st.markdown("""
 <style>
@@ -209,7 +209,7 @@ with col_logo:
     st.markdown(logo_html(118), unsafe_allow_html=True)
 with col_titulo:
     st.title("Gestão de Borracharia")
-    st.caption("SIGCF — Ordem de serviço de borracharia · vínculo frota → painel financeiro")
+    st.caption("SIGCF — ORDEM DE SERVIÇO DE BORRACHARIA")
 with col_acao:
     if st.button("🔄 Atualizar"):
         st.cache_data.clear()
@@ -317,4 +317,4 @@ with tab_consulta:
 st.divider()
 st.markdown('<div class="sec">Últimos serviços</div>', unsafe_allow_html=True)
 dark_table(os_para_df(os_data[:12]), height=200)
-st.caption("SIGCF | Borracharia SV | Núcleo de Controladoria SV")
+st.caption("SIGCF | Borracharia | Núcleo de Controladoria SV")
