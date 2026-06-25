@@ -262,15 +262,15 @@ with tab_nova:
         # ── Bloco de data/hora para disponibilidade ──────────────────────────
         st.markdown('<div class="sec">Período de indisponibilidade do equipamento</div>', unsafe_allow_html=True)
 
-        d1, d2, d3, d4 = st.columns(4)
+        d1, d2, d3 = st.columns(3)
         with d1:
-            data_inicio = st.date_input("📅 Data início", value=date.today(), key="bor_data_ini")
+            data_inicio = st.date_input("📅 Data", value=date.today(), key="bor_data_ini")
         with d2:
             hora_entrada = st.time_input("🕐 Hora início", value=time(7, 0), key="bor_hora_ini")
         with d3:
-            data_fim = st.date_input("📅 Data fim", value=date.today(), key="bor_data_fim")
-        with d4:
             hora_saida = st.time_input("🕑 Hora fim", value=time(8, 0), key="bor_hora_fim")
+        # data_fim assume o mesmo dia do início
+        data_fim = data_inicio
 
         # ── Textos ────────────────────────────────────────────────────────────
         descricao = st.text_area("📝 Descrição do serviço e peças aplicadas", max_chars=300)
