@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from datetime import datetime, date
+from datetime import datetime, date, time
 from io import BytesIO
 from supabase import create_client
 
@@ -20,6 +20,7 @@ exigir_acesso("OS BORRACHARIA")
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&display=swap');
+
 [data-testid="stAppViewContainer"]{background:#0a1409;}
 [data-testid="stSidebar"]{background:#111c10;border-right:1px solid #1e2e1c;}
 [data-testid="stHeader"]{background:#0a1409;}
@@ -28,57 +29,56 @@ h1,h2,h3,h4,p,span,label{color:#e8edd0;}
 h1{font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;}
 .stCaption,[data-testid="stCaptionContainer"] p{color:#8aab80!important;}
 .sec{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;
- letter-spacing:2px;text-transform:uppercase;color:#8aab80;
- border-left:4px solid #4a9e3f;padding-left:10px;margin:8px 0 12px;}
+letter-spacing:2px;text-transform:uppercase;color:#8aab80;
+border-left:4px solid #4a9e3f;padding-left:10px;margin:8px 0 12px;}
 .logo-frame{background:linear-gradient(145deg,#0a1628,#0d2040);border:2px solid #c9a227;
- border-radius:12px;padding:5px;display:inline-block;box-shadow:0 4px 18px rgba(0,0,0,.45);}
+border-radius:12px;padding:5px;display:inline-block;box-shadow:0 4px 18px rgba(0,0,0,.45);}
 .logo-frame img{display:block;border-radius:8px;}
 .ctx-box{background:#0d180c;border:1px solid #1e2e1c;border-radius:12px;padding:14px 16px;margin-bottom:12px;}
 .cat-badge{display:inline-block;background:#0d180c;border:1px solid #4a9e3f;color:#6fcf60;
- font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1px;
- padding:4px 12px;border-radius:8px;font-size:13px;}
+font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1px;
+padding:4px 12px;border-radius:8px;font-size:13px;}
 .cat-badge.pendente{border-color:#c9a227;color:#e8c547;}
-
 .stTextInput input,.stNumberInput input,.stTextArea textarea,
 [data-testid="stDateInput"] input,[data-testid="stTimeInput"] input{
- background:#dce6d2!important;color:#1a2818!important;
- border:1px solid #4a6644!important;border-radius:8px!important;}
+background:#dce6d2!important;color:#1a2818!important;
+border:1px solid #4a6644!important;border-radius:8px!important;}
 .stTextInput input:focus,.stNumberInput input:focus,.stTextArea textarea:focus,
 [data-testid="stDateInput"] input:focus,[data-testid="stTimeInput"] input:focus{
- border-color:#6fcf60!important;box-shadow:0 0 0 1px #6fcf6044!important;}
+border-color:#6fcf60!important;box-shadow:0 0 0 1px #6fcf6044!important;}
 div[data-baseweb="select"] > div{
- background:#dce6d2!important;border:1px solid #4a6644!important;
- color:#1a2818!important;border-radius:8px!important;}
+background:#dce6d2!important;border:1px solid #4a6644!important;
+color:#1a2818!important;border-radius:8px!important;}
 div[data-baseweb="select"] div{color:#1a2818!important;}
 div[data-baseweb="select"] svg{fill:#4a6644!important;}
 ul[data-testid="stSelectboxVirtualDropdown"],
 div[data-baseweb="popover"] ul{background:#e8edd0!important;}
 div[data-baseweb="popover"] li{color:#1a2818!important;}
 [data-testid="stNumberInput"] button{
- background:#cdd9c4!important;border-color:#4a6644!important;color:#1a2818!important;}
+background:#cdd9c4!important;border-color:#4a6644!important;color:#1a2818!important;}
 [data-testid="stForm"]{
- background:#0d180c!important;border:1px solid #1e2e1c!important;
- border-radius:12px;padding:12px 16px;}
+background:#0d180c!important;border:1px solid #1e2e1c!important;
+border-radius:12px;padding:12px 16px;}
 [data-testid="stVerticalBlockBorderWrapper"]{
- background:#0d180c!important;border-color:#1e2e1c!important;}
+background:#0d180c!important;border-color:#1e2e1c!important;}
 div[data-testid="stMetric"]{background:#0d180c;border:1px solid #1e2e1c;border-radius:10px;padding:10px 14px;}
 div[data-testid="stMetric"] label{color:#8aab80!important;}
 div[data-testid="stMetricValue"]{color:#6fcf60!important;font-family:'Barlow Condensed',sans-serif;}
 .stTabs [data-baseweb="tab-list"]{background:#0d180c;border-bottom:1px solid #1e2e1c;gap:8px;}
 .stTabs [data-baseweb="tab"]{
- color:#8aab80!important;font-family:'Barlow Condensed',sans-serif;
- font-weight:600;letter-spacing:0.5px;}
+color:#8aab80!important;font-family:'Barlow Condensed',sans-serif;
+font-weight:600;letter-spacing:0.5px;}
 .stTabs [aria-selected="true"]{
- color:#e8edd0!important;border-bottom-color:#4a9e3f!important;}
+color:#e8edd0!important;border-bottom-color:#4a9e3f!important;}
 .stTabs [data-baseweb="tab-highlight"]{background-color:#4a9e3f!important;}
 [data-testid="stExpander"]{
- background:#0d180c!important;border:1px solid #1e2e1c!important;border-radius:10px;}
+background:#0d180c!important;border:1px solid #1e2e1c!important;border-radius:10px;}
 [data-testid="stExpander"] summary{color:#e8edd0!important;}
 [data-testid="stRadio"] label span{color:#e8edd0!important;}
 .stButton button,[data-testid="stFormSubmitButton"] button{
- background:#4a9e3f!important;color:#ffffff!important;border:1px solid #6fcf60!important;
- font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1.5px;
- text-transform:uppercase;border-radius:8px;}
+background:#4a9e3f!important;color:#ffffff!important;border:1px solid #6fcf60!important;
+font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1.5px;
+text-transform:uppercase;border-radius:8px;}
 .stButton button:hover,[data-testid="stFormSubmitButton"] button:hover{background:#3d8534!important;}
 .stButton button p,[data-testid="stFormSubmitButton"] button p{color:#ffffff!important;}
 </style>
@@ -188,6 +188,8 @@ def os_para_df(rows: list) -> pd.DataFrame:
         "tempo_minutos": "Min",
         "status": "Status",
         "descricao": "Descrição",
+        "dt_inicio": "Início",
+        "dt_fim": "Fim",
     }
     exist = [c for c in cols if c in df.columns]
     out = df[exist].rename(columns=cols)
@@ -196,11 +198,18 @@ def os_para_df(rows: list) -> pd.DataFrame:
     return out
 
 
+def combinar_data_hora(d: date, t: time) -> datetime:
+    """Combina date + time em datetime."""
+    return datetime.combine(d, t)
+
+
 frota_data = carregar_frota()
 os_data = carregar_os()
 borracheiros = carregar_borracheiros()
+
 lista_frotas = [f"{f['id_frota']} - {f['modelo']}" for f in frota_data] or ["Cadastre a frota"]
 lista_borracheiros = borracheiros or ["Cadastre o borracheiro"]
+
 num_os = proximo_numero_os(os_data)
 numero_os_str = f"BOR-{num_os:04d}"
 
@@ -246,11 +255,24 @@ with tab_nova:
             borracheiro = st.selectbox("👤 Borracheiro", options=lista_borracheiros)
             tipo_manut = st.selectbox("🔧 Tipo de manutenção", options=TIPOS_MANUT)
             horimetro = st.number_input("⏱️ Horímetro ou KM atual", min_value=0.0, step=0.1, format="%.1f")
+
         with c2:
-            hora_entrada = st.time_input("🕐 Hora entrada", value=None)
-            hora_saida = st.time_input("🕑 Hora saída", value=None)
             status_os = st.radio("Status", ["FINALIZADO", "PENDENTE"], horizontal=True)
 
+        # ── Bloco de data/hora para disponibilidade ──────────────────────────
+        st.markdown('<div class="sec">Período de indisponibilidade do equipamento</div>', unsafe_allow_html=True)
+
+        d1, d2, d3, d4 = st.columns(4)
+        with d1:
+            data_inicio = st.date_input("📅 Data início", value=date.today(), key="bor_data_ini")
+        with d2:
+            hora_entrada = st.time_input("🕐 Hora início", value=time(7, 0), key="bor_hora_ini")
+        with d3:
+            data_fim = st.date_input("📅 Data fim", value=date.today(), key="bor_data_fim")
+        with d4:
+            hora_saida = st.time_input("🕑 Hora fim", value=time(8, 0), key="bor_hora_fim")
+
+        # ── Textos ────────────────────────────────────────────────────────────
         descricao = st.text_area("📝 Descrição do serviço e peças aplicadas", max_chars=300)
         observacao = st.text_area("💬 Observação", max_chars=200)
 
@@ -262,51 +284,65 @@ with tab_nova:
         if not descricao.strip():
             st.warning("Descrição é obrigatória.")
         else:
-            tempo_min = None
-            if hora_entrada and hora_saida:
-                dt_e = datetime.combine(date.today(), hora_entrada)
-                dt_s = datetime.combine(date.today(), hora_saida)
-                if dt_s > dt_e:
-                    tempo_min = int((dt_s - dt_e).total_seconds() / 60)
+            # Monta datetimes completos
+            dt_inicio = combinar_data_hora(data_inicio, hora_entrada)
+            dt_fim    = combinar_data_hora(data_fim, hora_saida)
 
-            novo = {
-                "numero_os": numero_os_str,
-                "id_frota": id_frota,
-                "horimetro": str(horimetro),
-                "borracheiro": borracheiro,
-                "tipo_manutencao": tipo_manut,
-                "hora_entrada": str(hora_entrada) if hora_entrada else None,
-                "hora_saida": str(hora_saida) if hora_saida else None,
-                "tempo_minutos": tempo_min,
-                "status": status_os,
-                "descricao": descricao.strip(),
-                "observacao": observacao.strip() or None,
-                "criado_em": datetime.now().isoformat(),
-            }
-            try:
-                supabase.table("os_borracharia").insert(novo).execute()
-                msg = f"O.S. {numero_os_str} registrada!"
-                if tempo_min:
-                    msg += f" Tempo: {tempo_min} min."
-                st.success(msg)
-                st.cache_data.clear()
-                st.rerun()
-            except Exception as e:
-                st.error(f"Erro ao salvar: {e}")
+            # Valida ordem cronológica
+            if dt_fim <= dt_inicio:
+                st.error("⚠️ A data/hora de FIM deve ser posterior ao INÍCIO.")
+            else:
+                tempo_min = int((dt_fim - dt_inicio).total_seconds() / 60)
+
+                novo = {
+                    "numero_os":      numero_os_str,
+                    "id_frota":       id_frota,
+                    "horimetro":      str(horimetro),
+                    "borracheiro":    borracheiro,
+                    "tipo_manutencao": tipo_manut,
+                    # campos legados (string) mantidos para compatibilidade
+                    "hora_entrada":   hora_entrada.strftime("%H:%M:%S"),
+                    "hora_saida":     hora_saida.strftime("%H:%M:%S"),
+                    # campos novos para disponibilidade
+                    "dt_inicio":      dt_inicio.isoformat(),
+                    "dt_fim":         dt_fim.isoformat(),
+                    "tempo_minutos":  tempo_min,
+                    "status":         status_os,
+                    "descricao":      descricao.strip(),
+                    "observacao":     observacao.strip() or None,
+                    "criado_em":      datetime.now().isoformat(),
+                }
+
+                try:
+                    supabase.table("os_borracharia").insert(novo).execute()
+                    horas = tempo_min // 60
+                    mins  = tempo_min % 60
+                    st.success(
+                        f"✅ O.S. {numero_os_str} registrada! "
+                        f"Tempo de indisponibilidade: {horas}h {mins}min."
+                    )
+                    st.cache_data.clear()
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Erro ao salvar: {e}")
 
 with tab_consulta:
     st.markdown('<div class="sec">Consultar ordens de serviço</div>', unsafe_allow_html=True)
     os_data = carregar_os(100)
+
     if not os_data:
         st.info("Nenhum serviço registrado.")
     else:
         df = os_para_df(os_data)
         pendentes = sum(1 for o in os_data if o.get("status") == "PENDENTE")
+
         m1, m2, m3 = st.columns(3)
         m1.metric("Total O.S.", len(os_data))
         m2.metric("Pendentes", pendentes)
         m3.metric("Finalizadas", len(os_data) - pendentes)
+
         dark_table(df, height=400)
+
         st.download_button(
             "⬇️ Exportar Excel",
             data=gerar_excel(df),
